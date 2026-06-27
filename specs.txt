@@ -1,0 +1,73 @@
+UI / app startup
+   ├── create shared decoder_queue
+   ├── create TimingModel
+   ├── start GPIO/EventQueue daemon
+   │       └── publishes completed events → decoder_queue
+   ├── instantiate decoder generator
+   │       └── reads from decoder_queue + timing
+   └── display yielded characters
+
+
+Straight Key
+     │
+     ▼
+GPIO callbacks
+     │
+     ▼
+EventQueue
+  • timestamps
+  • computes durations
+  • updates TimingModel
+  • publishes completed Events
+     │
+     ▼
+Decoder thread
+  • waits for timing.ready
+  • classifies events
+  • buffers . and -
+  • decodes complete characters
+  • yields characters
+     │
+     ▼
+UI thread
+  • waits for characters
+  • appends to display
+  • updates WPM indicator
+
+
+The classifier produces internal markers, but the generator yields only completed display text:
+
+ELEMENT_THRESHOLD_SCALAR = 2.0
+WORD_GAP_THRESHOLD_SCALAR = 5.0
+
+def classify_event(event, timing):
+    if event.state == "DOWN":
+        return "-" if event.duration_ms > ELEMENT_THRESHOLD_SCALAR * timing.dit_ms else "."
+
+    if event.duration_ms > WORD_GAP_THRESHOLD_SCALAR * timing.dit_ms:
+        return "<EOW>"
+    elif event.duration_ms > ELEMENT_THRESHOLD_SCALAR * timing.dit_ms:
+        return "<EOC>"
+    else:
+        return ""
+
+Then:
+
+def decode_stream(event_queue, timing, morse):
+    event_buffer = []
+
+    while True:
+        event = get_next_event(event_queue)
+        token = classify_event(event, timing)
+
+        if token in (".", "-"):
+            event_buffer.append(token)
+
+        elif token in ("<EOC>", "<EOW>"):
+            if event_buffer:
+                code = "".join(event_buffer)
+                char = morse.get(code, "?")
+                event_buffer.clear()
+
+                yield char + (" " if token == "<EOW>" else "")
+

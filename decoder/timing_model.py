@@ -20,6 +20,8 @@ class TimingModel:
                     self.dah_ms = long
                     self.ready = True
                     self.refine_centers(down_durations)
+                    return True
+        return False
 
     def refine_centers(self, down_times):
         dits = []
@@ -37,7 +39,7 @@ class TimingModel:
 
         # don't update from a useless batch
         if not dits or not dahs:
-            return
+            return False
 
         # proposed new centers
         new_dit = sum(dits) / len(dits)
@@ -46,9 +48,10 @@ class TimingModel:
         # sanity check the proposed update
         ratio = new_dah / new_dit
         if not (2.2 <= ratio <= 4.2):
-            return
+            return False
 
         # accept update
         self.dit_ms = new_dit
         self.dah_ms = new_dah
+        return True
         
