@@ -11,7 +11,7 @@ event_queue = EventQueue(timing, debug=True)
 tone = TonalBuzzer(18)
 led = LED(13)
 
-key = Button(26, pull_up=True)
+key = Button(26, pull_up=True, bounce_time=0.05)
 tx_key = DigitalOutputDevice(6, initial_value=False)
 
 def key_down():
