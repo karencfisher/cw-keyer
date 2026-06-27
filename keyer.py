@@ -1,6 +1,6 @@
 from gpiozero import TonalBuzzer, LED, Button, DigitalOutputDevice
 from signal import pause
-from threading import Queue
+from queue import Queue
 
 from decoder.events import EventQueue
 from decoder.timing_model import TimingModel

@@ -1,4 +1,4 @@
-from threading import Queue
+from queue import Queue
 
 from decoder.timing_model import TimingModel
 
