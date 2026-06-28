@@ -13,7 +13,7 @@ class Keyer:
         self.debug = debug
         
     def run(self):
-        event_queue = EventQueue(self.timing, debug=self.debug)
+        event_queue = EventQueue(self.timing, self.decoder_queue, debug=self.debug)
 
         tone = TonalBuzzer(18)
         led = LED(13)

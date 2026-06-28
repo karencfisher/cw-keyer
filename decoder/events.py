@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from collections import deque
 from time import perf_counter_ns
+from queue import Queue
 
 from decoder.timing_model import TimingModel
 
@@ -13,8 +14,9 @@ class Event:
     
     
 class EventQueue:
-    def __init__(self, timing: TimingModel, debug: bool=False):
+    def __init__(self, timing: TimingModel, decoder_queue: Queue, debug: bool=False):
         self.event_queue = deque()
+        self.decoder_queue = decoder_queue
         self.timing = timing
         self.down_times = []
         self.debug = debug
@@ -32,7 +34,8 @@ class EventQueue:
             previous.duration_ms = elapsed
             
             if previous.state == 'DOWN' and elapsed > 0:
-                  self.down_times.append(elapsed)
+                  self.down_times.append(elapsed)  
+            self.decoder_queue.put(previous)  
                   
         # Bootstrap timings
         if len(self.down_times) > 1 and not self.timing.ready:
