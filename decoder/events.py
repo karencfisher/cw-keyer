@@ -20,10 +20,7 @@ class EventQueue:
         self.timing = timing
         self.down_times = []
         self.debug = debug
-        
-    def __len__(self) -> int:
-        return len(self.event_queue)
-        
+               
     def enqueue_event(self, state: str) -> None:
         self.event_queue.append(Event(state, perf_counter_ns()))
         elapsed = 0
@@ -35,7 +32,7 @@ class EventQueue:
             
             if previous.state == 'DOWN' and elapsed > 0:
                   self.down_times.append(elapsed)  
-            self.decoder_queue.put(previous)  
+            self.decoder_queue.put(self.dequeue_event())  
                   
         # Bootstrap timings
         if len(self.down_times) > 1 and not self.timing.ready:
