@@ -1,7 +1,7 @@
 from queue import Queue, Empty
 
-from decoder.timing_model import TimingModel
-from decoder.morse import MORSE_CODE
+from keyer.decoder.timing_model import TimingModel
+from keyer.morse import MORSE_CODE
 
 
 ELEMENT_THRESHOLD_SCALAR = 2.0

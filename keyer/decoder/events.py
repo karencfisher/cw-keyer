@@ -3,7 +3,7 @@ from collections import deque
 from time import perf_counter_ns
 from queue import Queue
 
-from decoder.timing_model import TimingModel
+from keyer.decoder.timing_model import TimingModel
 
 
 @dataclass

@@ -2,9 +2,9 @@ from threading import Thread
 from queue import Queue
 from signal import pause
 
-from keyer import Keyer
-from decoder.timing_model import TimingModel
-from decoder.decode import Decoder
+from keyer.keyer import Keyer
+from keyer.decoder.timing_model import TimingModel
+from keyer.decoder.decode import Decoder
 
 
 def main():
