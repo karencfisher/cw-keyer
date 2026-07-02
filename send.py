@@ -1,7 +1,26 @@
-from keyer.sender.sender import Sender
+from keyer.encoder.sender import Sender
 
 
-s = Sender(10)
-for c in 'HELLO':
-    print(s.reverse_morse[c], end=' ')
-print('')
+S = Sender(13)
+
+def play(message: str) -> None:
+    S.send(message)
+    print('Sent!')
+
+def main():
+    message = ''
+    while True:
+        response = input('Message: ')
+        if response.upper() == '/X':
+            break
+        elif response.upper() == '/R':
+            play(message)
+        else:
+            message = response
+            play(message)
+    print("Exiting")
+    
+if __name__ == "__main__":
+    main()
+        
+        
